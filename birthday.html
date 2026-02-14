@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>For You ❤️</title>
+    
+    <!-- Importing Cursive Fonts (Dancing Script & Pacifico) -->
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Pacifico&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #ff005c;
+            --gold: #ffd700;
+            --glass: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            /* APPLIED CURSIVE FONT HERE */
+            font-family: 'Dancing Script', cursive; 
+            background: linear-gradient(-45deg, #1a0b2e, #4a0e2e, #71002b, #2e0014);
+            background-size: 400% 400%;
+            animation: gradientBG 12s ease infinite;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            cursor: none; 
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* --- CURSOR --- */
+        #cursor {
+            position: fixed;
+            width: 20px; height: 20px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 20px var(--primary);
+        }
+        
+        .trail {
+            position: fixed;
+            width: 8px; height: 8px;
+            background: var(--gold);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: fadeOut 0.8s forwards;
+            z-index: 9998;
+        }
+
+        @keyframes fadeOut {
+            to { opacity: 0; transform: scale(0); }
+        }
+
+        /* --- GLASS CARD --- */
+        .container {
+            position: relative;
+            z-index: 10;
+            width: 90%;
+            max-width: 500px;
+            background: var(--glass);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border);
+            border-radius: 30px;
+            padding: 50px 30px;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            display: none;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .container.visible {
+            display: block;
+            animation: fadeInUp 1s forwards;
+        }
+
+        @keyframes fadeInUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            font-family: 'Pacifico', cursive; /* Header specific font */
+            font-size: 3.5rem; /* Made larger for cursive */
+            margin-bottom: 20px;
+            text-shadow: 0 0 15px rgba(255, 0, 92, 0.8);
+            letter-spacing: 2px;
+        }
+
+        p {
+            font-size: 1.5rem; /* Larger text for readability */
+            line-height: 1.4;
+            margin-bottom: 30px;
+            color: #ffe6ea;
+            font-weight: 700;
+        }
+
+        /* BUTTONS */
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            min-height: 80px; 
+        }
+
+        button {
+            padding: 12px 35px;
+            border: none;
+            border-radius: 50px;
+            font-family: 'Pacifico', cursive; /* Buttons use the fancy font too */
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: transform 0.2s;
+            position: relative;
+            z-index: 100;
+        }
+
+        .btn-start {
+            background: transparent;
+            border: 2px solid var(--gold);
+            color: var(--gold);
+            box-shadow: 0 0 15px var(--gold);
+        }
+
+        .btn-yes {
+            background: #00c853;
+            color: white;
+            box-shadow: 0 5px 15px rgba(0, 200, 83, 0.4);
+        }
+        .btn-yes:hover { transform: scale(1.1); }
+
+        .btn-no {
+            background: #d50000;
+            color: white;
+            box-shadow: 0 5px 15px rgba(213, 0, 0, 0.4);
+            transition: top 0.15s ease, left 0.15s ease; 
+        }
+
+        /* --- PAGE 3 SPECIAL STYLES --- */
+        #page3 h1 {
+            color: var(--gold);
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+            font-size: 4rem;
+        }
+
+        #typed-text {
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.8rem;
+            min-height: 100px;
+            color: #fff;
+            text-align: left;
+            display: inline-block;
+        }
+
+        .cursor-blink {
+            display: inline-block;
+            width: 2px;
+            height: 1.8rem;
+            background: white;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink { 50% { opacity: 0; } }
+
+        /* --- FLOATING PARTICLES --- */
+        .floater {
+            position: absolute;
+            bottom: -10vh;
+            pointer-events: none;
+            z-index: 1;
+            animation: floatUp linear forwards;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            100% { transform: translateY(-120vh) rotate(20deg); opacity: 0; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="cursor"></div>
+
+    <!-- 
+        AUDIO SETTINGS
+        1. I put a generic Spanish Guitar song here so it works instantly for you.
+        2. To use the song from the video: 
+           - Rename your music file to "music.mp3"
+           - Put it in the same folder as this file.
+           - Change the src below to: src="music.mp3"
+    -->
+    <audio id="bgMusic" loop>
+        <source src="music.mp3" type="audio/ogg">
+    </audio>
+
+    <!-- PAGE 1: INTRO -->
+    <div class="container visible" id="page1">
+        <h1>For The Birthday Star</h1>
+        <p>I have a special question for you<br>before you blow out the candles... 🎂</p>
+        <button class="btn-start" onclick="goToQuestion()">Open Surprise ✨</button>
+    </div>
+
+    <!-- PAGE 2: THE QUESTION -->
+    <div class="container" id="page2">
+        <h1>One Wish...</h1>
+        <p>If I could give you one gift, it would be my heart forever. <br><b>Do you accept?</b></p>
+        <div class="btn-group">
+            <button class="btn-yes" onclick="celebrate()">Yes, I Do! 🎁</button>
+            <button class="btn-no" id="noBtn" onmouseover="escapeBtn()" onclick="escapeBtn()">No Thanks 🙄</button>
+        </div>
+    </div>
+
+    <!-- PAGE 3: CREATIVE CELEBRATION -->
+    <div class="container" id="page3">
+        <h1>Happy Birthday! 🎉</h1>
+        <div style="margin: 20px 0; border-top: 1px solid rgba(255,255,255,0.3); width: 100%;"></div>
+        
+        <!-- Typewriter Text Area -->
+        <p>
+            <span id="typed-text"></span><span class="cursor-blink">|</span>
+        </p>
+        
+        <p style="margin-top:30px; font-size: 1.2rem; opacity: 0.8;">(Whenever, Wherever... We're meant to be together ❤️)</p>
+    </div>
+
+    <script>
+        // --- CUSTOM CURSOR ---
+        const cursor = document.getElementById('cursor');
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+            
+            if(Math.random() > 0.8){
+                const trail = document.createElement('div');
+                trail.classList.add('trail');
+                trail.style.left = e.clientX + 'px';
+                trail.style.top = e.clientY + 'px';
+                document.body.appendChild(trail);
+                setTimeout(() => trail.remove(), 800);
+            }
+        });
+
+        // --- NAVIGATION ---
+        function goToQuestion() {
+            const audio = document.getElementById('bgMusic');
+            audio.volume = 0.6;
+            audio.play().catch(e => console.log("Click to play"));
+
+            document.getElementById('page1').classList.remove('visible');
+            document.getElementById('page1').style.display = 'none';
+            
+            const p2 = document.getElementById('page2');
+            p2.style.display = 'block';
+            setTimeout(() => p2.classList.add('visible'), 50);
+            
+            startBackgroundEffects();
+        }
+
+        // --- ESCAPE BUTTON LOGIC (Fixed & Smooth) ---
+        function escapeBtn() {
+            const btn = document.getElementById('noBtn');
+            const w = window.innerWidth - btn.offsetWidth - 50;
+            const h = window.innerHeight - btn.offsetHeight - 50;
+
+            const newX = Math.random() * w + 25;
+            const newY = Math.random() * h + 25;
+
+            btn.style.position = 'fixed';
+            btn.style.left = newX + 'px';
+            btn.style.top = newY + 'px';
+        }
+
+        // --- CELEBRATION LOGIC ---
+        function celebrate() {
+            document.getElementById('page2').style.display = 'none';
+            const p3 = document.getElementById('page3');
+            p3.style.display = 'block';
+            setTimeout(() => p3.classList.add('visible'), 50);
+
+            // 1. Massive Confetti Burst
+            for(let i=0; i<100; i++) {
+                setTimeout(() => createParticle(true), i * 10);
+            }
+
+            // 2. Start Typewriter
+            setTimeout(startTypewriter, 1000);
+            
+            // 3. Intensify Background
+            setInterval(() => createParticle(false), 200);
+        }
+
+        // --- TYPEWRITER EFFECT ---
+        // You can edit the message here!
+        const message = "To my favorite person...\n\nCan't you see? I'm at your feet.\nWhenever, wherever, we're meant to be together.\n\nHappy Birthday My Love! ❤️";
+        
+        let charIndex = 0;
+        const speed = 50; // typing speed
+
+        function startTypewriter() {
+            if (charIndex < message.length) {
+                const char = message.charAt(charIndex);
+                document.getElementById("typed-text").innerHTML += char === '\n' ? '<br>' : char;
+                charIndex++;
+                setTimeout(startTypewriter, speed);
+            } else {
+                document.querySelector(".cursor-blink").style.display = 'none';
+            }
+        }
+
+        // --- PARTICLE ENGINE (Hearts, Balloons, Gifts) ---
+        const icons = ['❤️', '🎈', '🎂', '🎁', '✨', '🧁', '👑', '🥳'];
+
+        function startBackgroundEffects() {
+            setInterval(() => createParticle(false), 800);
+        }
+
+        function createParticle(isBurst) {
+            const el = document.createElement('div');
+            el.classList.add('floater');
+            el.innerText = icons[Math.floor(Math.random() * icons.length)];
+            
+            // Random Position
+            el.style.left = Math.random() * 100 + 'vw';
+            
+            // Random Size
+            const size = Math.random() * 2 + 1; // 1rem to 3rem
+            el.style.fontSize = size + 'rem';
+            
+            // Random Speed
+            const duration = isBurst ? (Math.random() * 2 + 2) : (Math.random() * 5 + 5);
+            el.style.animationDuration = duration + 's';
+
+            document.body.appendChild(el);
+
+            setTimeout(() => el.remove(), duration * 1000);
+        }
+
+    </script>
+</body>
+</html>
